@@ -10,11 +10,12 @@ int main() {
     std::vector<std::string> input_bins = {
         bin_path + "/layers/input.bin"
     };
+
     std::vector<std::string> output_bins = {
-        bin_path + "/debug/layer139_out.bin",
-        bin_path + "/debug/layer150_out.bin",
-        bin_path + "/debug/layer161_out.bin"
+        bin_path + "/debug/layer30_out.bin",
+        bin_path + "/debug/layer37_out.bin"
     };
+
     std::string wgs_path  = bin_path + "/layers";
     std::string cfg_path  = cfg_base + "/tinv4_multi.cfg";
     std::string name_path = cfg_base + "/obj.names";
@@ -26,7 +27,7 @@ int main() {
     net->print();
 
     //convert network to tensorRT
-    tk::dnn::NetworkRT *netRT = new tk::dnn::NetworkRT(net, net->getNetworkRTName("custom_tinyolov4"));
+    tk::dnn::NetworkRT *netRT = new tk::dnn::NetworkRT(net, net->getNetworkRTName("custom_tinyv4_nano"));
 
     int ret = testInference(input_bins, output_bins, net, netRT);
     net->releaseLayers();
