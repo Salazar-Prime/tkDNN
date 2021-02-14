@@ -80,6 +80,7 @@ Results for COCO val 2017 (5k images), on RTX 2080Ti, with conf threshold=0.001
   - [Run the demo](#run-the-demo)
     - [FP16 inference](#fp16-inference)
     - [INT8 inference](#int8-inference)
+  - [Jetson Nano - Memory Error Fix](#jetson-nano---memory-error-fix)
   - [mAP demo](#map-demo)
   - [Existing tests and supported networks](#existing-tests-and-supported-networks)
   - [References](#references)
@@ -295,6 +296,35 @@ rm yolo3_fp32.rt                   # be sure to delete(or move) old tensorRT fil
 ./test_yolo3                       # build RT file
 ./test_rtinference yolo3_fp32.rt 4 # test with a batch size of 4
 ```
+
+
+## Jetson Nano - Memory Error Fix
+
+Additional 4GB of swap space is need for generating the tensorrt engine. 
+
+Run these commands on your Jetson (outside of container) to disable ZRAM and create a swap file:
+
+``` bash
+sudo systemctl disable nvzramconfig
+sudo fallocate -l 4G /mnt/4GB.swap
+sudo mkswap /mnt/4GB.swap
+sudo swapon /mnt/4GB.swap
+```
+
+Then add the following line to the end of `/etc/fstab` to make the change persistent:
+
+``` bash
+/mnt/4GB.swap  none  swap  sw 0  0
+```
+
+Now your swap file will automatically be mounted after reboots.  To check the usage, run `swapon -s` or `tegrastats`.  Disabling ZRAM (in-memory compressed swap) also free's up physical memory and requires a reboot to take effect.
+
+To undo these changes, remove line from fstab, delete swap and enable zram.
+
+``` bash
+sudo systemctl enable nvzramconfig
+```
+
 
 ## mAP demo
 
